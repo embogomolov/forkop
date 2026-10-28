@@ -153,7 +153,7 @@ export namespace Forkop {
     displayName: string;
     selectedCode?: string;
     selectedName?: string;
-    url?: string;
+    url?: string | string[];
     expectedStatus?: string;
     interval?: string;
     tolerance?: string | number;
@@ -290,7 +290,7 @@ export namespace Forkop {
     display_name?: string;
     check_interval?: string;
     tolerance?: string;
-    testing_url?: string;
+    testing_url?: string | string[];
     idle_timeout?: string;
     interrupt_exist_connections?: '0' | '1';
     server_filter_mode?: 'all' | 'exclude' | 'include' | 'direct';

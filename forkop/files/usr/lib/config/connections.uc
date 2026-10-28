@@ -585,7 +585,10 @@ function urltest_tolerance(section, value) {
 }
 
 function urltest_testing_url(section, value) {
-    return option(urltest_child(section, value), "testing_url", "https://www.gstatic.com/generate_204");
+    let urls = list_value(urltest_child(section, value), "testing_url");
+    if (length(urls) == 0)
+        return "https://www.gstatic.com/generate_204";
+    return length(urls) == 1 ? urls[0] : urls;
 }
 
 function urltest_expected_status(section, value) {

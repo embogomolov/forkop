@@ -608,6 +608,33 @@ describe('getDashboardSections', () => {
     ]);
   });
 
+  it('keeps every configured URLTest target on the dashboard', async () => {
+    const urls = [
+      'https://chatgpt.com',
+      'https://www.youtube.com/',
+      'https://telegram.org',
+    ];
+    mocks.getConfigSections.mockResolvedValue([
+      section(),
+      ...links([['Node A', 'vless://node@example.com:443#Node A']]),
+      child('urltest', 'fast', { name: 'Fast', testing_url: urls }),
+    ]);
+    setClashProxies({
+      Office: proxy('Selector', {
+        name: 'Office',
+        now: 'Office/Fast',
+        all: ['Office/Fast'],
+      }),
+      'Office/Fast': proxy('URLTest', {
+        name: 'Office/Fast',
+        all: ['Office/Node A'],
+      }),
+      'Office/Node A': proxy('VLESS'),
+    });
+    const result = await getDashboardSections();
+    expect(result.data[0].outbounds[0].urlTestInfo?.url).toEqual(urls);
+  });
+
   it('leaves out a configured group the runtime does not carry', async () => {
     mocks.getConfigSections.mockResolvedValue([
       section(),

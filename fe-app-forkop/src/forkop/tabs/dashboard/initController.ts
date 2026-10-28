@@ -959,7 +959,14 @@ function formatUrlTestLatency(latency: number) {
   return latency ? `${latency}ms` : _('N/A');
 }
 
-function renderDetailsUrl(value: unknown) {
+function renderDetailsUrl(value: unknown): HTMLElement {
+  if (Array.isArray(value)) {
+    return E(
+      'div',
+      {},
+      value.map((url) => E('div', {}, renderDetailsUrl(url))),
+    );
+  }
   const url = `${value ?? ''}`.trim();
 
   if (!/^https?:\/\//i.test(url)) {

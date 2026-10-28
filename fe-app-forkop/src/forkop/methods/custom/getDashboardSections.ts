@@ -33,7 +33,7 @@ type UrlTestConfig = {
   id: string;
   code: string;
   displayName: string;
-  testingUrl?: string;
+  testingUrl?: string | string[];
   expectedStatus?: string;
   checkInterval?: string;
   tolerance?: number;
@@ -512,11 +512,8 @@ function getUrlTestConfigs(section: Forkop.ConfigSection): UrlTestConfig[] {
       id,
       code: getChildTag(section, displayName),
       displayName,
-      testingUrl: itemSettingString(
-        settings,
-        'urltest_testing_url',
-        URLTEST_DEFAULTS.testing_url,
-      ),
+      testingUrl: (settings.urltest_testing_url ||
+        URLTEST_DEFAULTS.testing_url) as string | string[],
       expectedStatus: itemSettingString(
         settings,
         'expected_status',

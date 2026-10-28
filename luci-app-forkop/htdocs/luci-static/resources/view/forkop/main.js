@@ -2534,11 +2534,7 @@ function getUrlTestConfigs(section2) {
       id,
       code: getChildTag(section2, displayName),
       displayName,
-      testingUrl: itemSettingString(
-        settings,
-        "urltest_testing_url",
-        URLTEST_DEFAULTS.testing_url
-      ),
+      testingUrl: settings.urltest_testing_url || URLTEST_DEFAULTS.testing_url,
       expectedStatus: itemSettingString(
         settings,
         "expected_status",
@@ -10847,6 +10843,13 @@ function formatUrlTestLatency(latency) {
   return latency ? `${latency}ms` : _("N/A");
 }
 function renderDetailsUrl(value) {
+  if (Array.isArray(value)) {
+    return textE(
+      "div",
+      {},
+      value.map((url2) => textE("div", {}, renderDetailsUrl(url2)))
+    );
+  }
   const url = `${value ?? ""}`.trim();
   if (!/^https?:\/\//i.test(url)) {
     return textE("span", {}, formatUrlTestModalValue(value));
@@ -27132,12 +27135,17 @@ function addUrlTestItemOptions(itemSection, options = {}) {
   };
   o.validate = childItemNameCheck(options);
   o = itemSection.option(
-    form.Value,
+    form.DynamicList,
     "testing_url",
     _("Check URL"),
     _("Latency measurement for every server")
   );
   o.default = "https://www.gstatic.com/generate_204";
+  o.cfgvalue = function(itemId) {
+    return normalizeDynamicListItems(
+      optionMapValue(this, itemId, "testing_url")
+    );
+  };
   LATENCY_TEST_URL_OPTIONS.forEach((value) => o.value(value));
   o.validate = function(_itemId, value) {
     return validateUrlField(value);

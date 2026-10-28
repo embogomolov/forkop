@@ -93,6 +93,16 @@ t.test("each URLTest group carries its own settings, in list order in the select
     t.eq(slice(selector.outbounds, 0, 2), [ "proxy/Fast URLTest", "proxy/Stable URLTest" ]);
 });
 
+t.test("URLTest preserves multiple check URLs", () => {
+    let urls = [ "https://chatgpt.com", "https://www.youtube.com/", "https://telegram.org" ];
+    let config = build({
+        section: [ { ".name": "proxy", enabled: "1", action: "connection" } ],
+        connection_link: fixture.links("proxy", LINKS),
+        urltest: [ { ".name": "fast", section: "proxy", name: "Fastest", testing_url: urls } ]
+    });
+    t.eq(q.outbound(config, "proxy/Fastest").url, urls);
+});
+
 function fallback_fixture() {
     return {
         settings: { dns_server: [ "77.88.8.8" ], bootstrap_dns_server: [ "77.88.8.8" ] },

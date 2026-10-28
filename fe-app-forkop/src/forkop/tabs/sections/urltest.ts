@@ -91,12 +91,17 @@ function addUrlTestItemOptions(
   o.validate = childItemNameCheck(options);
 
   o = itemSection.option(
-    form.Value,
+    form.DynamicList,
     'testing_url',
     _('Check URL'),
     _('Latency measurement for every server'),
   );
   o.default = 'https://www.gstatic.com/generate_204';
+  o.cfgvalue = function (itemId: string) {
+    return normalizeDynamicListItems(
+      optionMapValue(this, itemId, 'testing_url'),
+    );
+  };
   LATENCY_TEST_URL_OPTIONS.forEach((value: string) => o.value(value));
   o.validate = function (_itemId: string, value: unknown) {
     return validateUrlField(value);

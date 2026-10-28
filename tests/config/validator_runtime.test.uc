@@ -2,6 +2,18 @@ let t = require("t");
 let v = require("validation");
 let fixture = require("fixture");
 
+t.test("URLTest validates every check URL", () => {
+    let config = {
+        section: [ { ".name": "proxy", enabled: "1", action: "connection" } ],
+        connection_link: fixture.links("proxy", [ "socks://127.0.0.1:1080#node" ]),
+        urltest: [ { ".name": "fast", section: "proxy", name: "Fastest",
+            testing_url: [ "https://chatgpt.com", "https://telegram.org" ] } ]
+    };
+    v.accepts(config);
+    config.urltest[0].testing_url[1] = "file:///etc/passwd";
+    v.refuses(config, "Invalid URL value");
+});
+
 t.test("accepts valid", () => {
     v.accepts({
         "settings": {

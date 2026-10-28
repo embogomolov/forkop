@@ -1063,7 +1063,9 @@ function validate_rule(section, sections, context) {
             let check_interval = connections.urltest_check_interval(section, urltest_id);
             validate_required_duration_option(check_interval, "'Check interval' of " + urltest);
             validate_urltest_tolerance_value(connections.urltest_tolerance(section, urltest_id), urltest);
-            validate_http_url_option(connections.urltest_testing_url(section, urltest_id), "'Check URL' of " + urltest);
+            let urls = connections.urltest_testing_url(section, urltest_id);
+            for (let url in type(urls) == "array" ? urls : [ urls ])
+                validate_http_url_option(url, "'Check URL' of " + urltest);
             if (!expected_status_valid(connections.urltest_expected_status(section, urltest_id)))
                 fail_validation("Invalid 'Expected status' of " + urltest + ". Use *, status codes, or ranges such as 204/200-299");
             let idle_timeout = connections.urltest_idle_timeout(section, urltest_id);
